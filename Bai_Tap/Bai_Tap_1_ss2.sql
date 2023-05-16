@@ -39,22 +39,18 @@ foreign key (SoDH)references don_dat_hang(SoDH)
 );
 create table don_dat_hang(
 SoDH int primary key,
-NgayDH datetime
-);
-create table cung_cap(
-SoDH int,
+NgayDH datetime,
 MaNCC varchar(45),
-primary key(SoDH,MaNCC ),
-foreign key(SoDH)references don_dat_hang(SoDH),
-foreign key (MaNCC)references NhaCC(MaNCC)
+foreign key(MaNCC)references NhaCC(MaNCC)
 );
+
 create table NhaCC(
 MaNCC varchar(45) primary key,
 TenNCC varchar(45),
-DiaChi varchar(45),
-sdt int,
-foreign key (sdt)references SDT(sdt)
+DiaChi varchar(45)
 );
 create table SDT(
-sdt int primary key
+sdt int primary key,
+MaNCC varchar(45),
+foreign key (MaNCC)references NhaCC(MaNCC)
 );
