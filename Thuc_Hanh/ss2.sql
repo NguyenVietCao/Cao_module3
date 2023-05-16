@@ -73,4 +73,34 @@ insert into instructor(`name`,birthday, salary)
  values ('nguyen van a','1981-12-12',1,8,null,'anv'),('tran van b','1981-12-12',1,5,null,'bnv');
 
  insert into instructor_class(class_id,instructor_id) values (1,1),(1,2),(2,1),(2,2),(3,1),(3,2);
+ 
+ -- 1.Hiện thị danh sách các lớp có học viên theo học và số lượng học viên của mỗi lớp ( yêu cầu viết code ra giấy )
+ select class.name, count(student.id) as student_count
+ from class
+ join student on class.id = student.id
+ group by class.name;
+ 
+ -- 2.Tính điểm lớn nhất của mỗi các lớp 
+ select class.name, max(student.point) as max_point
+ from class
+ join student on class.id = student.id
+ group by class.name;
+ -- 3.Tình điểm trung bình  của từng lớp
+ select class.name, avg (student.point) as avg_class
+ from class
+ join student on class.id = student.id
+ group by class.name;
+ -- 4. Lấy ra toàn bộ tên và ngày sinh các instructor và student ở CodeGym.
+ select student.birthday as student_birthday,student.name as student_name,instructor.name as instructor_name,instructor.birthday as instructor_birthday
+ from student,instructor;
+ -- 5. Lấy ra top 3 học viên có điểm cao nhất của trung tâm.
+ select name,point
+ from student
+ order by point desc
+ limit 3;
+ -- 6. Lấy ra các học viên có điểm số là cao nhất của trung tâm.
+ select name,point
+ from student
+ where point = (select max(point) from student);
+ 
 
