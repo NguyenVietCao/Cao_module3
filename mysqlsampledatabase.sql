@@ -7933,4 +7933,83 @@ select * from customers where customerName = 'Land of Toys Inc.' ;
 Explain select * from customers where customerName = 'Land of Toys Inc.';
 -- Thêm chỉ mục 
 alter table customers add index idx_full_name(contactFirstName,contactLastName);
-Explain select * from customers where contactFirstName = 'Jean' or 'King' 
+Explain select * from customers where contactFirstName = 'Jean' or 'King' ;
+-- Xoá chỉ mục
+alter table customers drop index idx_full_name;
+-- Tạo my SQL stored Procedure
+
+DELIMITER // 
+create procedure findAllCustomers()
+begin
+select * from customers;
+end //
+DELIMITER ;
+-- Tham số loại IN
+DELIMITER //
+create procedure getCustomerById (in cusNum int)
+begin
+select * from customers where customerNumber = cusNum;
+end //
+DELIMITER ;
+-- Gọi stored procedure
+call getcustomerById(175) ;
+-- Tham số loại out
+DELIMITER //
+create procedure getCustomerCountByCity(
+in in_city varchar(50),
+out total int 
+)
+begin
+select count(customerNumber)into total
+from customers where city = in_city;
+end //
+DELIMITER ;
+-- goi stored procedure
+CALL getCustomerCountByCity('Lyon',@total);
+SELECT @total;
+-- Tham số loại inout
+DELIMITER //
+
+CREATE PROCEDURE SetCounter(
+
+    INOUT counter INT,
+
+    IN inc INT
+
+)
+
+BEGIN
+
+    SET counter = counter + inc;
+
+END//
+
+DELIMITER ;
+
+-- gọi procedure 
+SET @counter = 1;
+
+CALL SetCounter(@counter,1); -- 2
+
+CALL SetCounter(@counter,1); -- 3
+
+CALL SetCounter(@counter,5); -- 8
+
+SELECT @counter;
+-- Tạo view
+create VIEW customers_view as
+select customerNumber, customerName, phone
+from customers;
+-- Lấy dữ liệu từ bản ảo
+select * from customers_view;
+--  Cập nhật view customer_views: 
+CREATE OR REPLACE VIEW customer_views AS
+
+SELECT customerNumber, customerName, contactFirstName, contactLastName, phone
+
+FROM customers
+
+WHERE city = 'Nantes';
+-- Ví dụ: xoá view customer_views:
+
+DROP VIEW customer_views;
