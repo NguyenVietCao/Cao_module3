@@ -335,9 +335,103 @@ group by hdct.ma_dich_vu_di_kem
 having count(dvdk.ma_dich_vu_di_kem) = 1;
 -- 15.	Hiển thi thông tin của tất cả nhân viên bao gồm ma_nhan_vien, ho_ten, ten_trinh_do, ten_bo_phan,
 --  so_dien_thoai, dia_chi mới chỉ lập được tối đa 3 hợp đồng từ năm 2020 đến 2021.
+select 
+nhan_vien.ma_nhan_vien,
+nhan_vien.ho_ten,
+trinh_do.ten_trinh_do,
+bo_phan.ten_bo_phan,
+nhan_vien.so_dien_thoai,
+nhan_vien.dia_chi
+from nhan_vien
+join trinh_do on trinh_do.ma_trinh_do = nhan_vien.ma_trinh_do
+join bo_phan on nhan_vien.ma_bo_phan = bo_phan.ma_bo_phan
+join hop_dong on hop_dong.ma_nhan_vien = nhan_vien.ma_nhan_vien
+where year(hop_dong.ngay_lam_hop_dong) between 2020 and 2021
+limit 3;
+-- 16.	Xóa những Nhân viên chưa từng lập được hợp đồng nào từ năm 2019 đến năm 2021.
+set sql_safe_update = 0;
+-- Tắt chế độ cập nhập an toàn
+delete from nhan_vien
+where ma_nhan_vien not in (
+select ma_nhan_vien from hop_dong
+where ngay_lam_hop_dong between '2019-01-01' and '2021-12-31'
+);
+set sql_safe_update = 1;
+-- Bật chế độ cập nhập an toàn
+
+-- 17.	Cập nhật thông tin những khách hàng có ten_loai_khach từ Platinum lên Diamond, 
+-- chỉ cập nhật những khách hàng đã từng đặt phòng với Tổng Tiền thanh toán trong năm 2021 là lớn hơn 10.000.000 VNĐ.
+-- Tổng tiền thanh toán 
+select 
+khach_hang.ho_ten, 
+sum(hop_dong.ma_hop_dong * dich_vu.chi_phi_thue + hop_dong.ma_hop_dong * dich_vu_di_kem.gia) as tong_tien_thanh_toan_2021
+from khach_hang
+join loai_khach on loai_khach.ma_loai_khach = khach_hang.ma_loai_khach
+join hop_dong on hop_dong.ma_khach_hang = khach_hang.ma_khach_hang
+join dich_vu on hop_dong.ma_dich_vu = dich_vu.ma_dich_vu
+join hop_dong_chi_tiet on hop_dong_chi_tiet.ma_hop_dong = hop_dong.ma_hop_dong
+join dich_vu_di_kem on dich_vu_di_kem.ma_dich_vu_di_kem = hop_dong_chi_tiet.ma_dich_vu_di_kem
+where year(ngay_lam_hop_dong) = 2021 and (hop_dong.ma_hop_dong * dich_vu.chi_phi_thue + hop_dong.ma_hop_dong * dich_vu_di_kem.gia) > 10000000
+group by khach_hang.ho_ten;
+-- Tạo view
+create view  tong_tien_thanh_toan_2021_view as
+select 
+khach_hang.ho_ten, 
+sum(hop_dong.ma_hop_dong * dich_vu.chi_phi_thue + hop_dong.ma_hop_dong * dich_vu_di_kem.gia) as tong_tien_thanh_toan_2021
+from khach_hang
+join loai_khach on loai_khach.ma_loai_khach = khach_hang.ma_loai_khach
+join hop_dong on hop_dong.ma_khach_hang = khach_hang.ma_khach_hang
+join dich_vu on hop_dong.ma_dich_vu = dich_vu.ma_dich_vu
+join hop_dong_chi_tiet on hop_dong_chi_tiet.ma_hop_dong = hop_dong.ma_hop_dong
+join dich_vu_di_kem on dich_vu_di_kem.ma_dich_vu_di_kem = hop_dong_chi_tiet.ma_dich_vu_di_kem
+where year(ngay_lam_hop_dong) = 2021 and (hop_dong.ma_hop_dong * dich_vu.chi_phi_thue + hop_dong.ma_hop_dong * dich_vu_di_kem.gia) > 10000000
+group by khach_hang.ho_ten;
+select tong_tien_thanh_toan_2021 from tong_tien_thanh_toan_view;
 
 
+-- cập nhật từ Platium lên Diamond
+update loai_khach
+set ten_loai_khach = 'Diamond'
+where ten_loai_khach = 'Platium' and  tong_tien_thanh_toan_2021_view > 10000000;
+-- chưa đạt 
 
 
+-- 18.	Xóa những khách hàng có hợp đồng trước năm 2021 (chú ý ràng buộc giữa các bảng).
+-- Để xoá ta xoá từ con đến cha
+delete from hop_dong_chi_tiet
+ where ma_hop_dong in (
+						select ma_hop_dong
+                        from hop_dong
+                        where year (ngay_lam_hop_hong) < 2021
+						);
+delete from hop_dong
+where year(ngay_lam_hop_dong) < 2021;
 
+delete from khach_hang
+where ma_khach_hang not in (
+							select ma_khach_hang
+                            from hop_dong
+);
 
+-- 19.	Cập nhật giá cho các dịch vụ đi kèm được sử dụng trên 10 lần trong năm 2020 lên gấp đôi.
+update dich_vu_di_kem
+set gia = gia * 2
+where ma_dich_vu_di_kem in(
+							select ma_dich_vu_di_kem
+                            from hop_dong_chi_tiet
+                            join hop_dong on hop_dong.ma_hop_dong = hop_dong_chi_tiet.ma_hop_dong
+                            where year (hop_dong.ngay_lam_hop_dong) = 2020
+                            group by ma_dich_vu_di_kem
+                            having count(*) > 10
+);
+-- 19 chưa đạt
+
+-- 20.	Hiển thị thông tin của tất cả các nhân viên và khách hàng có trong hệ thống, 
+-- thông tin hiển thị bao gồm id (ma_nhan_vien, ma_khach_hang), ho_ten, email, so_dien_thoai, ngay_sinh, dia_chi.
+SELECT ma_nhan_vien AS id, ho_ten, email, so_dien_thoai, ngay_sinh, dia_chi
+FROM nhan_vien
+
+UNION
+
+SELECT ma_khach_hang AS id, ho_ten, email, so_dien_thoai, ngay_sinh, dia_chi
+FROM khach_hang;
