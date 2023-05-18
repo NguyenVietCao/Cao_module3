@@ -323,13 +323,18 @@ ldv.ten_loai_dich_vu,
 dvdk.ten_dich_vu_di_kem,
 count(dvdk.ma_dich_vu_di_kem) as so_lan_su_dung
 from hop_dong hd
-join hop_dong_chi_tiet hdct on hdct.ma_hop_dong = hd.ma_hop_dong
-join dich_vu_di_kem dvdk on dvdk.ma_dich_vu_di_kem = hdct.ma_dich_vu_di_kem
-join dich_vu dv on dv.ma_dich_vu = hd.ma_dich_vu
-join loai_dich_vu ldv on ldv.ma_loai_dich_vu = dv.ma_loai_dich_vu
+join hop_dong_chi_tiet hdct 
+on hdct.ma_hop_dong = hd.ma_hop_dong
+join dich_vu_di_kem dvdk
+ on dvdk.ma_dich_vu_di_kem = hdct.ma_dich_vu_di_kem
+join dich_vu dv 
+on dv.ma_dich_vu = hd.ma_dich_vu
+join loai_dich_vu ldv 
+on ldv.ma_loai_dich_vu = dv.ma_loai_dich_vu
 group by hd.ma_hop_dong, ldv.ten_loai_dich_vu,dvdk.ten_dich_vu_di_kem
-having count (dvdk.ma_dich_vu_di_kem) = 1
-
+having count(dvdk.ma_dich_vu_di_kem) = 1;
+-- 15.	Hiển thi thông tin của tất cả nhân viên bao gồm ma_nhan_vien, ho_ten, ten_trinh_do, ten_bo_phan,
+--  so_dien_thoai, dia_chi mới chỉ lập được tối đa 3 hợp đồng từ năm 2020 đến 2021.
 
 
 
