@@ -376,23 +376,25 @@ group by khach_hang.ho_ten;
 -- Tạo view
 create view  tong_tien_thanh_toan_2021_view as
 select 
-khach_hang.ho_ten, 
-sum(hop_dong.ma_hop_dong * dich_vu.chi_phi_thue + hop_dong.ma_hop_dong * dich_vu_di_kem.gia) as tong_tien_thanh_toan_2021
+khach_hang.ma_khach_hang
 from khach_hang
 join loai_khach on loai_khach.ma_loai_khach = khach_hang.ma_loai_khach
 join hop_dong on hop_dong.ma_khach_hang = khach_hang.ma_khach_hang
 join dich_vu on hop_dong.ma_dich_vu = dich_vu.ma_dich_vu
 join hop_dong_chi_tiet on hop_dong_chi_tiet.ma_hop_dong = hop_dong.ma_hop_dong
 join dich_vu_di_kem on dich_vu_di_kem.ma_dich_vu_di_kem = hop_dong_chi_tiet.ma_dich_vu_di_kem
-where year(ngay_lam_hop_dong) = 2021 and (hop_dong.ma_hop_dong * dich_vu.chi_phi_thue + hop_dong.ma_hop_dong * dich_vu_di_kem.gia) > 10000000
-group by khach_hang.ho_ten;
-select tong_tien_thanh_toan_2021 from tong_tien_thanh_toan_view;
+where year(ngay_lam_hop_dong) = 2021 and loai_khach.ten_loai_khach ='Platinium'
+group by khach_hang.ma_khach_hang
+having  sum(hop_dong.ma_hop_dong * dich_vu.chi_phi_thue + hop_dong.ma_hop_dong * dich_vu_di_kem.gia) > 10000000;
+select *  from tong_tien_thanh_toan_2021_view;
 
 
 -- cập nhật từ Platium lên Diamond
-update loai_khach
-set ten_loai_khach = 'Diamond'
-where ten_loai_khach = 'Platium' and  tong_tien_thanh_toan_2021_view > 10000000;
+set sql_safe_updates = 0;
+update khach_hang
+set ma_loai_khach = 1
+where ma_khach_hang in (select * from tong_tien_thanh_toan_2021_view);
+
 -- chưa đạt 
 
 
