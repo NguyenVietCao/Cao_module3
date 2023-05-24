@@ -1,0 +1,31 @@
+.row {
+    display: flex;
+}
+
+.header {
+    height: 30px;
+    background-color: grey;
+    align-items: center;
+    padding-left: 10px;
+}
+
+.header_menu {
+    height: 30px;
+    background-color: whitesmoke;
+    margin-top: 10px;
+    padding-left: 19px;
+    justify-content: center;
+}
+
+.css_header_menu {
+    border-right: thick solid black;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.footer{
+    justify-content: center;
+    background-color: whitesmoke;
+    height: 40px;
+    align-items: center;
+    color: blue;
+}
