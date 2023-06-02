@@ -88,16 +88,30 @@ public class UserServlet extends HttpServlet {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-
+                break;
+            case"sort":
+                sort(request,response);
+                 break;
+        }
+    }
+    private void sort(HttpServletRequest request, HttpServletResponse response){
+        List<User>list = userDao.sortByName();
+        request.setAttribute("listUser",list);
+        try {
+            request.getRequestDispatcher("user/list.jsp").forward(request,response);
+        } catch (ServletException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     private void searchUser(HttpServletRequest request, HttpServletResponse response) {
         String country = request.getParameter("country");
         List<User>userList = userDao.searchUser(country);
-        request.setAttribute("userList",userList);
+        request.setAttribute("listUser",userList);
         try {
-            request.getRequestDispatcher("user/search.jsp").forward(request,response);
+            request.getRequestDispatcher("/user/list.jsp").forward(request,response);
         } catch (ServletException e) {
             e.printStackTrace();
         } catch (IOException e) {

@@ -16,9 +16,9 @@
 <body>
 <center>
     <h1>User Management</h1>
-    <form action="/UserServlet" method="post">
+    <form action="/UserServlet?action=search" method="post">
         <input type="hidden" name="userList">
-        <input type="text" placeholder="Your country" id="search" name="userList">
+        <input type="text" placeholder="Your country" id="search" name="country">
         <button type="submit" >Search</button>
     </form>
 
@@ -49,6 +49,9 @@
             </tr>
         </c:forEach>
     </table>
+    <form action="/UserServlet?action=sort" method="post">
+        <input type="submit" value="Sort By Name" name="sort" id="sort">
+    </form>
 </div>
 </body>
 </html>
