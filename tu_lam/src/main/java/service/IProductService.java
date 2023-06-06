@@ -7,7 +7,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface IProductService {
-    void addNewProduct (Product product);
+    void addNewProduct(Product product);
+
     List<Product> displayListProduct();
 
+    Product getProductById(int id);
+
+    void editProduct(Product product);
+
+    void deleteProduct(int id);
 }

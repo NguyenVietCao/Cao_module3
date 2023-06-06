@@ -1,18 +1,13 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: mac
-  Date: 05/06/2023
-  Time: 19:09
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Title</title>
+    <title>JSP - Hello World</title>
 </head>
 <body>
-<a href="/ProductServlet">
-  <h1>Display Product List</h1>
-</a>
+<h1>Product List
+</h1>
+<br/>
+<a href="/ProductServlet">Show Product List</a>
 </body>
 </html>
