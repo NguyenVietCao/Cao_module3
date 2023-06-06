@@ -11,20 +11,28 @@
     <title>Title</title>
 </head>
 <body>
-<form action="/ProductServlet?action=create" method="post">
-
-    <label for="productName">Name</label>
-    <input type="text" id="productName" name="productName">
-    <br>
-    <label for="productPrice">Price</label>
-    <input type="text" id="productPrice" name="productPrice">
-
-    <br>
-    <label for="productDescription">Description</label>
-    <input type="text" id="productDescription" name="productDescription">
-    <br>
-    <label for="productImage">Image</label>
-    <input type="text" id="productImage" name="productImage">
+<form action="/ProductServlet?action=create" method="post" align = "center">
+    <table border="1" cellpadding="5" align="center">
+        <tr>
+         <h3>Create New Product</h3>
+        </tr>
+        <tr>
+            <td>  <label for="productName">Name</label></td>
+            <td>  <input type="text" id="productName" name="productName"></td>
+        </tr>
+        <tr>
+            <td> <label for="productPrice">Price</label></td>
+            <td>  <input type="text" id="productPrice" name="productPrice"></td>
+        </tr>
+        <tr>
+            <td>   <label for="productDescription">Description</label></td>
+            <td>  <input type="text" id="productDescription" name="productDescription"></td>
+        </tr>
+        <tr>
+            <td> <label for="productImage">Image</label></td>
+            <td> <input type="text" id="productImage" name="productImage"></td>
+        </tr>
+    </table>
 
     <input type="submit" value="Submit">
 

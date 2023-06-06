@@ -40,8 +40,9 @@
 
     </table>
 
-    <input type="submit" value="Submit" align="center">
+    <input type="submit" value="Submit" align="center" ">
 
 </form>
+
 </body>
 </html>

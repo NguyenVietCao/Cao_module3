@@ -27,7 +27,7 @@ public class ProductServlet extends HttpServlet {
                 showEditForm(request,response);
                 break;
             case "delete":
-//                int id = Integer.parseInt(request.getParameter("id"));
+                int id = Integer.parseInt(request.getParameter("id"));
                 removeProduct(request,response);
                 break;
             default:

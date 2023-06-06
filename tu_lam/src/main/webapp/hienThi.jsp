@@ -35,13 +35,21 @@
                 <td>${product.productImage}</td>
                 <td>
                     <a href="/ProductServlet?action=edit&id=${product.productID}">Edit</a>
-                    <a href="/ProductServlet?action=delete&id=${product.productID}">Delete</a>
+                    <a href="/ProductServlet?action=delete&id=${product.productID}" onclick="confirmDelete()">Delete</a>
                 </td>
             </tr>
         </c:forEach>
     </table
 </div>
-
+<script>
+    function confirmDelete() {
+        var result = confirm("Are you sure you want to delete this item?");
+        if (result) {
+            // Chuyển đến Servlet để xử lý xoá
+            window.location.href = "deleteServlet?id=<%= request.getParameter("id") %>";
+        }
+    }
+</script>
 
 </body>
 </html>
